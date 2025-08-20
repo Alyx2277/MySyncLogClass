@@ -19,6 +19,41 @@ std::string to_string_helper(T&& arg) {
 	oss << std::forward<T>(arg);
 	return oss.str();
 }
+
+//需要一个线程安全的日志队列作为生产者
+class LogQueue {
+public:
+	void push(std::string& msg) {
+		//RAII思想，一旦成功构造就自动加锁，一旦析构就自动解锁
+		std::lock_guard<std::mutex> lock(mutex_);
+		queue_.push(msg);
+		//如果队列中数据为空，数据为1
+		//if (queue_.size() == 1) {
+		//	//告诉消费者线程，如果是挂起状态，现在可以消费了。
+		//	cond_var_.notify_one();
+		//}
+		//可以直接通知，在消费者中处理就行了
+		cond_var_.notify_one();
+	}
+	bool pop(std::string& msg) {
+		std::unique_lock<std::mutex> lock(mutex_);
+		if (queue_.empty()) {
+			cond_var_.wait(lock, [this]() {
+				return !queue_.empty() || is_shutdown_;
+			});
+			//要注意操作系统虚假唤醒行为
+		}
+	}
+	void shutDown() {
+	}
+private:
+	std::queue<std::string> queue_;
+	std::mutex mutex_;
+	std::condition_variable cond_var_;//条件变量
+	bool is_shutdown_ = false;
+};
+
+//一个独立的写入线程，
 int main() {
 	return 0;
 }
