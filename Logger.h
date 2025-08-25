@@ -97,7 +97,7 @@ public:
 	}
 	template<typename... Args>
 	void log(const std::string& format, Args&&... args) {
-		log_queue_.push(formatMessage())
+		log_queue_.push(formatMessage(format, std::forward<Args>(args)...));
 	}
 private:
 	LogQueue log_queue_;
