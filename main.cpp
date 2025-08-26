@@ -1,24 +1,25 @@
-#include <queue>
-#include <string>
-#include <mutex>
-#include <condition_variable>
-#include <thread>
-#include <fstream>
-#include <atomic>
-#include <sstream>
-#include <vector>
-#include <stdexcept>
+#include "Logger.h"
+#include <iostream>
 
-//辅助函数，实现将单个参数转换为字符串
-template <typename T>
-std::string to_string_helper(T&& arg) {
-	//T&&是可以匹配任何类型的参数(左值右值)
-	//创建一个字符串输出流对象 oss，用于将数据格式化为字符串。
-	std::ostringstream oss;
-	//使用完美转发std::forward<T>(arg); 传进来是什么类型，左值右值，出去还是那个值
-	oss << std::forward<T>(arg);
-	return oss.str();
-}
+
+//一个独立的写入线程，
 int main() {
+	try {
+		Logger logger("testlog.txt");
+		logger.log("Log starting application");
+		int user_id = 27;
+		std::string  user_name = "yzj";
+		float weight = 2.75;
+		std::string hello_obj = "world";
+		logger.log("Userid: {},User name: {}",user_id,user_name);
+		logger.log("Hello {},weight is {}", hello_obj, weight);
+		logger.log("--------Log end---------");
+
+		//模拟延迟等待确保写入完成
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+	}
+	catch (const std::exception& ex){
+		std::cerr << "日志系统初始化失败: " << ex.what() << std::endl;
+	}
 	return 0;
 }
