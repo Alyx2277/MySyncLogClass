@@ -24,7 +24,11 @@ std::string to_string_helper(T&& arg) {
 //需要一个线程安全的日志队列作为生产者
 class LogQueue {
 public:
+<<<<<<< HEAD
 	void push(std::string&& msg) {
+=======
+	void push(std::string& msg) {
+>>>>>>> 1dc835062323b68006a9a21a17ca53464f5d8044
 		//RAII思想，一旦成功构造就自动加锁，一旦析构就自动解锁
 		std::lock_guard<std::mutex> lock(mutex_);
 		queue_.push(msg);
@@ -44,6 +48,7 @@ public:
 				//返回true，退出等待，返回false，继续等待
 				});
 			//要注意操作系统虚假唤醒行为
+<<<<<<< HEAD
 			if (is_shutdown_ && queue_.empty()) {
 				return false;
 			}
@@ -51,6 +56,16 @@ public:
 		msg = queue_.front();
 		queue_.pop();
 		return true;
+=======
+			if (!is_shutdown_ && queue_.empty()) {
+				return false;
+			}
+
+			msg = queue_.front();
+			queue_.pop();
+			return true;
+		}
+>>>>>>> 1dc835062323b68006a9a21a17ca53464f5d8044
 	}
 	void shutDown() {
 		std::lock_guard<std::mutex> lock(mutex_);
@@ -67,7 +82,12 @@ private:
 class Logger
 {
 public:
+<<<<<<< HEAD
 	Logger(const std::string& filename) :log_file_(filename, std::ios::out | std::ios::app), exit_flag_(false)
+=======
+	Logger(const std::string& filename) :log_file_
+	(filename, std::ios::out | std::ios::app), exit_flag_(false)
+>>>>>>> 1dc835062323b68006a9a21a17ca53464f5d8044
 	{
 		//打开文件，创建写入线程
 		if (!log_file_.is_open()) {
@@ -103,6 +123,7 @@ private:
 	std::ofstream log_file_;
 	std::atomic<bool> exit_flag_;
 
+<<<<<<< HEAD
 	template<typename... Args>
 	std::string formatMessage(const std::string& format, Args&&... args) {
 		std::vector<std::string> arg_strings = { to_string_helper(std::forward<Args>(args))... };
@@ -135,4 +156,6 @@ private:
 
 		return oss.str();
 	}
+=======
+>>>>>>> 1dc835062323b68006a9a21a17ca53464f5d8044
 };
