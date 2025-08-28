@@ -1,8 +1,5 @@
 #include "Logger.h"
-<<<<<<< HEAD
 #include <iostream>
-=======
->>>>>>> 1dc835062323b68006a9a21a17ca53464f5d8044
 
 
 //一个独立的写入线程，

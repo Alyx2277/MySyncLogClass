@@ -125,12 +125,6 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
-<<<<<<< HEAD
-=======
-  <ItemGroup>
-    <ClInclude Include="Logger.h" />
-  </ItemGroup>
->>>>>>> 1dc835062323b68006a9a21a17ca53464f5d8044
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
